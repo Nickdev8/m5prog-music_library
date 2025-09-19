@@ -1,0 +1,63 @@
+-- db/schema.sql
+SET NAMES utf8mb4;
+SET time_zone = '+00:00';
+
+CREATE DATABASE IF NOT EXISTS `music_library`
+  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `music_library`;
+
+-- 1) ARTISTS
+CREATE TABLE IF NOT EXISTS artists (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  country VARCHAR(100) NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- 2) ALBUMS (FK → artists)
+CREATE TABLE IF NOT EXISTS albums (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  artist_id INT UNSIGNED NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  release_year SMALLINT UNSIGNED NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_albums_artist
+    FOREIGN KEY (artist_id) REFERENCES artists(id)
+    ON UPDATE CASCADE ON DELETE RESTRICT,
+  INDEX (artist_id),
+  INDEX (release_year)
+) ENGINE=InnoDB;
+
+-- 3) TRACKS (FK → albums)
+CREATE TABLE IF NOT EXISTS tracks (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  album_id INT UNSIGNED NOT NULL,
+  track_no SMALLINT UNSIGNED NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  length_seconds INT UNSIGNED NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_tracks_album
+    FOREIGN KEY (album_id) REFERENCES albums(id)
+    ON UPDATE CASCADE ON DELETE CASCADE,
+  UNIQUE KEY uniq_album_track (album_id, track_no),
+  INDEX (album_id)
+) ENGINE=InnoDB;
+
+-- 4) GENRES (optioneel)
+CREATE TABLE IF NOT EXISTS genres (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL UNIQUE
+) ENGINE=InnoDB;
+
+-- 5) ALBUM_GENRES (N↔N, optioneel)
+CREATE TABLE IF NOT EXISTS album_genres (
+  album_id INT UNSIGNED NOT NULL,
+  genre_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (album_id, genre_id),
+  CONSTRAINT fk_album_genres_album
+    FOREIGN KEY (album_id) REFERENCES albums(id)
+    ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT fk_album_genres_genre
+    FOREIGN KEY (genre_id) REFERENCES genres(id)
+    ON UPDATE CASCADE ON DELETE RESTRICT
+) ENGINE=InnoDB;

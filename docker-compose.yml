@@ -33,7 +33,7 @@ services:
       MYSQL_PASSWORD: "${DB_PASSWORD}"
       MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
     ports:
-      - "3305:3306"
+      - "3356:3306"   # <— extern:intern (intern MOET 3306 zijn)
     volumes:
       - db_data:/var/lib/mysql
 

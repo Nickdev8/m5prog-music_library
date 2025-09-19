@@ -1,40 +1,48 @@
 <?php
-$current = basename($_SERVER['SCRIPT_NAME']);
-function navActive($file, $current) { return $file === $current ? 'active' : ''; }
+// public/single.php
+require_once __DIR__ . '/../views/data.php';
+
+$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+if ($id === null || $id === false || !isset($library[$id])) {
+  // Voorbeeld van beëindiging van script met bericht:
+  exit('<!doctype html><meta charset="utf-8"><p style="font-family:system-ui">Item niet gevonden.</p>');
+}
+$item = $library[$id];
+
+$pageTitle = 'Music Library · ' . $item['title'];
+require_once __DIR__ . '/../views/header.php';
 ?>
-<!doctype html>
-<html lang="nl">
-<head>
-  <meta charset="utf-8">
-  <title>Music Library · Single</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="/dist/css/main.min.css" rel="stylesheet">
-</head>
-<body>
-<header class="py-3 border-bottom bg-white">
-  <div class="container d-flex flex-wrap align-items-center justify-content-between">
-    <h1 class="h4 m-0">Music Library</h1>
-    <nav class="nav gap-3">
-      <a class="nav-link p-0 link-secondary <?= navActive('index.php',$current) ?>" href="/index.php">Home</a>
-      <a class="nav-link p-0 link-secondary <?= navActive('single.php',$current) ?>" href="/single.php">Single</a>
-      <a class="nav-link p-0 link-secondary <?= navActive('about.php',$current) ?>" href="/about.php">About</a>
-    </nav>
-  </div>
-</header>
 
-<main class="container my-5">
-  <article class="col-lg-8 mx-auto">
-    <h2 class="mb-3">Detailpagina (Single)</h2>
-    <p class="lead">Hier komt straks de detailinformatie van een album/track/artist uit de database.</p>
-    <hr>
-    <p>Voor nu is dit statische demo-tekst zodat je de navigatie en layout kunt controleren.</p>
-  </article>
-</main>
+<article class="col-lg-8 mx-auto">
+  <h2 class="mb-3"><?= htmlspecialchars($item['title']) ?></h2>
+  <p class="lead mb-1"><strong>Artist:</strong> <?= htmlspecialchars($item['artist']) ?></p>
+  <p class="text-muted"><strong>Year:</strong> <?= htmlspecialchars($item['year']) ?></p>
 
-<footer class="py-4 border-top">
-  <div class="container text-muted small">Single page footer</div>
-</footer>
+  <hr>
+  <h3 class="h5">Loop voorbeelden</h3>
+  <ul class="small">
+    <?php
+    // while: tel tot 3
+    $n = 1;
+    while ($n <= 3) { echo "<li>while #{$n}</li>"; $n++; }
 
-<script src="/dist/js/main.js"></script>
-</body>
-</html>
+    // do..while: wordt minimaal 1x uitgevoerd
+    $m = 0;
+    do { echo "<li>do..while #{$m}</li>"; $m++; } while ($m < 1);
+
+    // for: drie iteraties
+    for ($i = 0; $i < 3; $i++) { echo "<li>for #{$i}</li>"; }
+
+    // foreach: voorbeeld op basis van $library (alleen eerste 3)
+    $count = 0;
+    foreach ($library as $row) {
+      if ($count === 1) { $count++; continue; } // sla één item over
+      echo "<li>foreach: " . htmlspecialchars($row['title']) . "</li>";
+      $count++;
+      if ($count >= 3) break; // stop vroegtijdig
+    }
+    ?>
+  </ul>
+</article>
+
+<?php require_once __DIR__ . '/../views/footer.php'; ?>
