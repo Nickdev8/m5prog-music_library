@@ -14,3 +14,14 @@ $cyan:    #17a2b8 !default;
 
 $font-family-monospace:  Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !default;
 $headings-font-family: $font-family-monospace;
+
+:root {
+  --brand: #0d6efd;
+}
+header .nav-link.active {
+  color: var(--brand) !important;
+  font-weight: 700;
+}
+.card svg rect {
+  fill: var(--brand);
+}
