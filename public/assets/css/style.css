@@ -1,0 +1,24 @@
+/* public/assets/css/style.css */
+:root {
+  --brand: #0d6efd;
+}
+
+body {
+  background-color: #f8f9fa;
+}
+
+header .nav-link {
+  font-weight: 500;
+}
+
+.card svg rect {
+  fill: var(--brand);
+}
+
+.card-title {
+  font-weight: 700;
+}
+
+footer {
+  background: #fff;
+}
