@@ -35,3 +35,4 @@ $RECYCLE.BIN/
 .env
 _sources
 docker/db_data/
+node_modules/
