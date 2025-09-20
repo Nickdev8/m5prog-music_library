@@ -4,7 +4,7 @@
 </section>
 <div class="album py-5 bg-light rounded-3">
   <div class="container">
-    <div class="row g-4 row-cols-1 row-cols-sm-2 row-cols-md-4">
+    <div class="row g-4 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
       <?php while ($single = mysqli_fetch_assoc($result)) : ?>
         <?php include __DIR__ . '/card.php'; ?>
       <?php endwhile; ?>

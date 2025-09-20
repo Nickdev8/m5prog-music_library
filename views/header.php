@@ -15,7 +15,7 @@ $pageTitle = defined('PAGE_TITLE') ? PAGE_TITLE : 'Music Library';
         crossorigin="anonymous">
   <link rel="stylesheet" href="/assets/css/style.css">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 <header class="bg-dark text-white shadow-sm">
   <div class="container d-flex flex-wrap align-items-center justify-content-between py-2">
     <a href="/" class="navbar-brand text-white text-decoration-none">
