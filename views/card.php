@@ -7,16 +7,25 @@
            alt="<?= htmlspecialchars($single['title']) ?>">
     </div>
     <div class="card-body d-flex flex-column">
-      <h5 class="card-title mb-1"><?= htmlspecialchars($single['title']) ?></h5>
+      <h5 class="card-title mb-1">
+        <a href="/single/<?= urlencode($single['slug']) ?>">
+          <?= htmlspecialchars($single['title']) ?>
+        </a>
+      </h5>
       <p class="card-text text-muted mb-3">
-        <?= htmlspecialchars($single['artist_title'] ?? '') ?>
+        <?php if (!empty($single['artist_title'])): ?>
+          <a href="/artist/<?= urlencode($single['artist_slug']) ?>">
+            <?= htmlspecialchars($single['artist_title']) ?>
+          </a>
+        <?php endif; ?>
         <?php if (!empty($single['genre_title'])): ?>
-          · <span class="badge text-bg-light"><?= htmlspecialchars($single['genre_title']) ?></span>
+          · <a href="/genre/<?= urlencode($single['genre_slug']) ?>">
+              <?= htmlspecialchars($single['genre_title']) ?>
+            </a>
         <?php endif; ?>
       </p>
-      <div class="mt-auto d-flex gap-2">
-        <a href="/single/<?= urlencode($single['slug']) ?>"
-           class="btn btn-sm btn-outline-secondary">Bekijk</a>
+      <div class="mt-auto">
+        <a href="/single/<?= urlencode($single['slug']) ?>" class="btn btn-sm btn-outline-secondary w-100">Bekijk</a>
       </div>
     </div>
   </div>

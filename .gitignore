@@ -36,3 +36,5 @@ $RECYCLE.BIN/
 _sources
 docker/db_data/
 node_modules/
+.jpg
+public/assets/img/*
