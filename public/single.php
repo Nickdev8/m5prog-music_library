@@ -1,48 +1,57 @@
 <?php
-// public/single.php
-require_once __DIR__ . '/../views/data.php';
-
-$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-if ($id === null || $id === false || !isset($library[$id])) {
-  // Voorbeeld van beëindiging van script met bericht:
-  exit('<!doctype html><meta charset="utf-8"><p style="font-family:system-ui">Item niet gevonden.</p>');
+// Veilig de GET-parameter ophalen
+if (!isset($_GET['single'])) {
+    die('Geen single gevonden');
 }
-$item = $library[$id];
+$single_id = filter_input(INPUT_GET, 'single', FILTER_VALIDATE_INT);
+if ($single_id === null || $single_id === false) {
+    die('Ongeldige single id');
+}
 
-$pageTitle = 'Music Library · ' . $item['title'];
+require_once __DIR__ . '/../source/database.php';
+
+// Eén item ophalen via prepared + bind
+$query = <<<SQL
+SELECT s.*,
+       a.title AS artist_title,
+       g.title AS genre_title
+FROM singles s
+LEFT JOIN artists a ON a.id = s.artist_id
+LEFT JOIN genres  g ON g.id = s.genre_id
+WHERE s.id = ?
+SQL;
+
+$stmt = $connection->prepare($query);
+$stmt->bind_param('i', $single_id);   // i = integer
+$stmt->execute();
+$result = $stmt->get_result();
+
+$single = mysqli_fetch_assoc($result);
+if (!$single) {
+    die('Single niet gevonden');
+}
+
+$pageTitle = 'Music Library · ' . $single['title'];
 require_once __DIR__ . '/../views/header.php';
 ?>
 
 <article class="col-lg-8 mx-auto">
-  <h2 class="mb-3"><?= htmlspecialchars($item['title']) ?></h2>
-  <p class="lead mb-1"><strong>Artist:</strong> <?= htmlspecialchars($item['artist']) ?></p>
-  <p class="text-muted"><strong>Year:</strong> <?= htmlspecialchars($item['year']) ?></p>
+  <h2 class="mb-3"><?= htmlspecialchars($single['title']) ?></h2>
 
-  <hr>
-  <h3 class="h5">Loop voorbeelden</h3>
-  <ul class="small">
-    <?php
-    // while: tel tot 3
-    $n = 1;
-    while ($n <= 3) { echo "<li>while #{$n}</li>"; $n++; }
+  <figure class="mb-4">
+    <img class="img-fluid rounded"
+         src="<?= htmlspecialchars($single['image'] ?? '/assets/img/placeholder.jpg') ?>"
+         alt="<?= htmlspecialchars($single['title']) ?>">
+    <figcaption class="text-muted mt-2 small">
+      <?= htmlspecialchars($single['artist_title'] ?? 'Onbekende artiest') ?>
+      <?php if (!empty($single['genre_title'])): ?>
+        · <?= htmlspecialchars($single['genre_title']) ?>
+      <?php endif; ?>
+    </figcaption>
+  </figure>
 
-    // do..while: wordt minimaal 1x uitgevoerd
-    $m = 0;
-    do { echo "<li>do..while #{$m}</li>"; $m++; } while ($m < 1);
-
-    // for: drie iteraties
-    for ($i = 0; $i < 3; $i++) { echo "<li>for #{$i}</li>"; }
-
-    // foreach: voorbeeld op basis van $library (alleen eerste 3)
-    $count = 0;
-    foreach ($library as $row) {
-      if ($count === 1) { $count++; continue; } // sla één item over
-      echo "<li>foreach: " . htmlspecialchars($row['title']) . "</li>";
-      $count++;
-      if ($count >= 3) break; // stop vroegtijdig
-    }
-    ?>
-  </ul>
+  <p>Hier kun je extra metadata of beschrijving tonen.</p>
+  <a class="btn btn-outline-secondary" href="/index.php">← Terug naar overzicht</a>
 </article>
 
 <?php require_once __DIR__ . '/../views/footer.php'; ?>
