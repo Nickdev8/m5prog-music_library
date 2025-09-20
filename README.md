@@ -1,4 +1,5 @@
 # Music Library
+<img width="1590" height="1034" alt="screenshot" src="https://github.com/user-attachments/assets/04efca3a-9011-4d3c-8e85-9b3a4a0c1e99" />
 
 Een muziekbibliotheek gebouwd met PHP (MVC) voor de module M5PROG. 
 
